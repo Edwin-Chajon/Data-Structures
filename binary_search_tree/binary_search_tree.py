@@ -9,8 +9,6 @@ This part of the project comprises two days:
 2. Implement the `in_order_print`, `bft_print`, and `dft_print` methods
    on the BSTNode class.
 """
-from collections import deque
-
 class BinarySearchTree:
     def __init__(self, value):
         self.value = value
@@ -20,66 +18,46 @@ class BinarySearchTree:
     # Insert the given value into the tree
     def insert(self, value):
         if value < self.value:
-            # we know we need to go left 
-            # how do we know when we need to recurse again, 
-            # or when to stop? 
-            if not self.left:
-                # we can park our value here 
+            if self.left is None:
                 self.left = BinarySearchTree(value)
             else:
-                # we can't park here 
-                # keep searching 
                 self.left.insert(value)
-        else:
-            # we know we need to go right 
-            if not self.right:
+        elif value >= self.value:
+            if self.right is None:
                 self.right = BinarySearchTree(value)
             else:
                 self.right.insert(value)
 
-
-
     # Return True if the tree contains the value
     # False if it does not
     def contains(self, target):
-        # when we start searching, self will be the root
-        # compare the target against self
-        # 
-        # Criteria for returning False: we know we need to go in one direction
-        if target == self.value:
+        if self.value == target:
             return True
+        if target >= self.value:
+            if self.right is None:
+                return False
+            else:
+                return self.right.contains(target)
         if target < self.value:
-            # go left if left is a BinarySearchTree
-            if not self.left:
+            if self.left is None:
                 return False
-            return self.left.contains(target)
-        else:
-            # go right if right is a BinarySearchTree
-            if not self.right:
-                return False
-
+            else:
+                return self.left.contains(target)
 
     # Return the maximum value found in the tree
     def get_max(self):
-        # we'll keep going right until there are no more nodes on the right side 
-        if not self.right:
+        if self.right is None:
             return self.value
-        # otherwise, keep going right 
-        return self.right.get_max()
-
+        else:
+            return self.right.get_max()
 
     # Call the function `fn` on the value of each node
     def for_each(self, fn):
-        # call the fn on the value at this node 
         fn(self.value)
-
-        # pass this function to the left child 
-        if self.left:
-            self.left.for_each(fn)
-        # pass this function to the right child 
-        if self.right:
+        if self.right is not None:
             self.right.for_each(fn)
-
+        if self.left is not None:
+            self.left.for_each(fn)
 
     # Part 2 -----------------------
 
@@ -108,22 +86,3 @@ class BinarySearchTree:
     # Print Post-order recursive DFT
     def post_order_dft(self, node):
         pass
-
-
-import random
-
-v1 = random.randint(1, 101)
-v2 = random.randint(1, 101)
-v3 = random.randint(1, 101)
-v4 = random.randint(1, 101)
-v5 = random.randint(1, 101)
-
-bst = BinarySearchTree(5)
-
-bst.insert(v1)
-bst.insert(v2)
-bst.insert(v3)
-bst.insert(v4)
-bst.insert(v5)
-
-bst.for_each(lambda v: print(v))
